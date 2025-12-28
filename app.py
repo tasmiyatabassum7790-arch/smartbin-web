@@ -35,8 +35,9 @@ if uploaded_file is not None and api_key:
 
     try:
         genai.configure(api_key=api_key)
-        # UPDATED MODEL FOR 2025
-        model = genai.GenerativeModel("gemini-1.5-flash-001")
+        
+        # --- THE FIX IS HERE (Using the standard name) ---
+        model = genai.GenerativeModel("gemini-1.5-flash")
 
         system_prompt = """
         You are an expert Indian Waste Management Guide. Analyze the image and output purely valid JSON.
@@ -77,5 +78,4 @@ if uploaded_file is not None and api_key:
         st.error(f"Error: {e}")
 
 elif not api_key:
-
     st.warning("⚠️ Please enter your API Key in the sidebar to start.")
