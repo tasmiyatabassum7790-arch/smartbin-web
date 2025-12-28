@@ -37,7 +37,7 @@ if uploaded_file is not None and api_key:
         genai.configure(api_key=api_key)
         
         # --- ATTEMPT 1: Try the standard Flash model ---
-        model_name = "gemini-1.5-flash" 
+        model_name = "gemini-2.5-flash" 
         model = genai.GenerativeModel(model_name)
 
         system_prompt = """
@@ -92,3 +92,4 @@ if uploaded_file is not None and api_key:
 
 elif not api_key:
     st.warning("⚠️ Please enter your API Key in the sidebar to start.")
+
