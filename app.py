@@ -45,7 +45,7 @@ if uploaded_file is not None:
     with st.spinner(f"Analyzing waste & generating {selected_lang_name} audio..."):
         try:
             # 1. Setup Model (Using a reliable model version)
-            model = genai.GenerativeModel('gemini-1.5-flash') 
+            model = genai.GenerativeModel('gemini-2.0-flash-exp') 
             
             # 2. Process Image
             image_bytes = uploaded_file.getvalue()
@@ -120,5 +120,6 @@ if uploaded_file is not None:
 
         except Exception as e:
             st.error(f"Error: {e}")
+
 
 
