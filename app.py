@@ -8,14 +8,21 @@ import os
 st.set_page_config(page_title="Smart Waste Sorter", page_icon="♻️")
 st.header("♻️ Smart Waste Sorter")
 
-# --- API KEY SETUP ---
-if "GOOGLE_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-else:
-    st.error("Missing API Key. Please add it to your Streamlit secrets.")
+# --- MANUAL API KEY ENTRY ---
+st.markdown("### 🔑 Enter API Key")
+api_key = st.text_input("Paste your Google Gemini API Key here:", type="password")
+
+if not api_key:
+    st.warning("⚠️ Please enter an API Key to use the app.")
+    st.stop()  # Stop the app here until key is entered
+
+# Configure the API with the entered key
+try:
+    genai.configure(api_key=api_key)
+except Exception as e:
+    st.error(f"Invalid API Key: {e}")
 
 # --- LANGUAGE SELECTOR ---
-# Dictionary to map Display Name -> gTTS Language Code
 languages = {
     "Hindi (हिंदी)": "hi",
     "Kannada (ಕನ್ನಡ)": "kn",
@@ -25,7 +32,6 @@ languages = {
     "Malayalam (മലയാളം)": "ml"
 }
 
-# Dropdown for user to select language
 selected_lang_name = st.selectbox("Select Audio Language / ಭಾಷೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ", list(languages.keys()))
 selected_lang_code = languages[selected_lang_name]
 
@@ -38,8 +44,8 @@ if uploaded_file is not None:
 
     with st.spinner(f"Analyzing waste & generating {selected_lang_name} audio..."):
         try:
-            # 1. Setup Model
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            # 1. Setup Model (Using a reliable model version)
+            model = genai.GenerativeModel('gemini-2.0-flash-exp') 
             
             # 2. Process Image
             image_bytes = uploaded_file.getvalue()
@@ -50,7 +56,7 @@ if uploaded_file is not None:
                 }
             ]
 
-            # 3. DYNAMIC PROMPT (Adapts to selected language)
+            # 3. DYNAMIC PROMPT
             prompt = f"""
             You are an expert Indian waste management assistant. 
             Analyze the image in detail. Identify exactly what the item is.
@@ -101,7 +107,7 @@ if uploaded_file is not None:
             
             # --- AUDIO SECTION ---
             st.write(f"🔊 **{selected_lang_name} Instruction:**")
-            st.write(f"_{translated_text}_") # Show the translated text too
+            st.write(f"_{translated_text}_")
             
             if translated_text:
                 try:
